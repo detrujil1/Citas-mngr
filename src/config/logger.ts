@@ -6,8 +6,9 @@ const logFormat = winston.format.combine(
     winston.format.errors({ stack: true }),
     winston.format.splat(),
     winston.format.printf(({ timestamp, level, message, uuid, ...meta }) => {
-        const metaString = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
-        return `[${timestamp}] [${level.toUpperCase()}] [${uuid || 'N/A'}] ${message}${metaString}`;
+        return `[${timestamp}] [${level.toUpperCase()}] [${uuid || 'N/A'}] ${message} ${
+            Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''
+        }`;
     })
 );
 

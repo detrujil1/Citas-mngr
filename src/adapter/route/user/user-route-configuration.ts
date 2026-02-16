@@ -5,6 +5,7 @@ import { AuthService } from '../../../usecase/auth/auth-service';
 import { MongoAuthCreator } from '../../../infrastructure/persistence/mongodb/repositories/auth-creator';
 import { MongoDoctorRepository } from '../../../infrastructure/persistence/mongodb/repositories/doctor-repository';
 import { MongoPatientRepository } from '../../../infrastructure/persistence/mongodb/repositories/patient-repository';
+import { MongoUserFetcher } from '../../../infrastructure/persistence/mongodb/repositories/user-fetcher';
 import { validateRequestBody } from '../../middleware/validate-param';
 
 const userRouter = Router();
@@ -14,7 +15,8 @@ const authService = new AuthService(
     new MongoAuthCreator(),
     new JWTAuthenticatorAdapter(),
     new MongoDoctorRepository(),
-    new MongoPatientRepository()
+    new MongoPatientRepository(),
+    new MongoUserFetcher()
 );
 
 const authController = new AuthenticationController(authService);

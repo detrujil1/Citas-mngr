@@ -9,7 +9,7 @@ db.createCollection('appointments');
 // Crear índices
 db.users.createIndex({ "email": 1 }, { unique: true });
 db.specialties.createIndex({ "name": 1 }, { unique: true });
-db.doctors.createIndex({ "userId": 1 }, { unique: true });
+db.doctors.createIndex({ "email": 1 }, { unique: true });
 db.doctors.createIndex({ "licenseNumber": 1 }, { unique: true });
 db.appointments.createIndex({ "doctorId": 1, "appointmentDate": 1, "startTime": 1 });
 db.appointments.createIndex({ "patientId": 1, "appointmentDate": 1 });
@@ -112,7 +112,6 @@ db.users.insertMany([doctor1User, doctor2User]);
 const doctors = [
     {
         _id: ObjectId(),
-        userId: doctor1User._id,
         name: doctor1User.name,
         email: doctor1User.email,
         password: doctor1User.password,
@@ -156,7 +155,6 @@ const doctors = [
     },
     {
         _id: ObjectId(),
-        userId: doctor2User._id,
         name: doctor2User.name,
         email: doctor2User.email,
         password: doctor2User.password,

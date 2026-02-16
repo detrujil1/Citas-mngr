@@ -5,13 +5,15 @@ import { JWTAuthenticatorAdapter } from '../../infrastructure/adapter/jwt/authen
 import { UserRole } from '../../domain/entity/user';
 import { MongoDoctorRepository } from '../../infrastructure/persistence/mongodb/repositories/doctor-repository';
 import { MongoPatientRepository } from '../../infrastructure/persistence/mongodb/repositories/patient-repository';
+import { MongoUserFetcher } from '../../infrastructure/persistence/mongodb/repositories/user-fetcher';
 
 export class AuthService {
     constructor(
         private readonly authCreator: MongoAuthCreator,
         private readonly authenticator: JWTAuthenticatorAdapter,
         private readonly doctorRepository: MongoDoctorRepository,
-        private readonly patientRepository: MongoPatientRepository
+        private readonly patientRepository: MongoPatientRepository,
+        private readonly userFetcher: MongoUserFetcher
     ) {}
 
     async registerDoctor(data: IRegisterDoctor): Promise<IAuthResponse> {
@@ -103,6 +105,11 @@ export class AuthService {
         }
 
         if (!user) {
+            user = await this.userFetcher.findByEmail(email);
+            role = user?.role || UserRole.ADMIN;
+        }
+
+        if (!user) {
             throw new Error('Invalid credentials');
         }
 
@@ -133,7 +140,7 @@ export class AuthService {
         if (role === UserRole.MEDICO) {
             userResponse.specialtyId = user.specialtyId;
             userResponse.licenseNumber = user.licenseNumber;
-        } else {
+        } else if (role === UserRole.PACIENTE) {
             userResponse.dateOfBirth = user.dateOfBirth;
             userResponse.address = user.address;
             userResponse.emergencyContact = user.emergencyContact;
